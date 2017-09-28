@@ -1,0 +1,61 @@
+/*legend{
+    width: auto;
+    margin-bottom: 0;
+    border-bottom: 0;
+}*/
+
+#admin-footer{
+    line-height: 30px;
+}
+
+.gray-bg {
+    /*background-color: #f3f3f4;*/
+}
+a.layui-this {
+    color: #01AAED !important
+}
+
+.no-padding {
+    padding: 0!important;
+}
+
+/*form中input为文字时 */
+.form-input-text{
+    line-height: 38px;
+}
+
+/*强制换行*/
+.word-break {
+    word-break: break-all;
+}
+
+/* 圆图*/
+.img-circle {
+    border-radius: 50%;
+}
+
+.avatar-normal{
+    width: 80px;
+    height: 80px;
+}
+
+.avatar-small{
+    width: 64px;
+    height: 64px;
+}
+.avatar-mini{
+    width: 32px;
+    height: 32px;
+}
+.avatar-mini2{
+    width: 30px;
+    height: 30px;
+}
+.border{
+    border: 1px solid #e7eaec;
+}
+.circle_div{
+    text-align: center;
+    font-size: 12px;
+    border: 1px solid #e7eaec;
+}
