@@ -101,7 +101,7 @@ class DefaultController extends BaseController
 
         //分页
         $pagination = new \yii\data\Pagination([
-            'defaultPageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 20),
+            'pageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 20),
             'totalCount' => $query->count(),
         ]);
 

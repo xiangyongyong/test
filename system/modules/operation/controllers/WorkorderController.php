@@ -6,6 +6,7 @@ use system\modules\workorder\models\WorkOrder;
 use system\modules\main\models\Comment;
 use system\modules\main\models\Log;
 use system\modules\user\models\User;
+use yii\data\Pagination;
 
 /**
  * Default controller for the `operation` module
@@ -50,7 +51,7 @@ class WorkorderController extends BaseController
         $suspendingCounts = $query->where(['state' => WorkOrder::STATE_SUSPENDING])->count();
         $handlingCounts = $query->where(['state' => WorkOrder::STATE_HANDLING])->count();
         $finishCounts = $query->where(['state' => WorkOrder::$STATE_FINISH])->count();
-        print_r($data);print_r($suspendingCounts." ");print_r($handlingCounts." ");print_r($finishCounts." ");exit;
+        //print_r($data);print_r($suspendingCounts." ");print_r($handlingCounts." ");print_r($finishCounts." ");exit;
         return $this->render('index', [
             'suspendingCounts' => $suspendingCounts,
             'handlingCounts' => $handlingCounts,
@@ -86,7 +87,7 @@ class WorkorderController extends BaseController
 
         //分页
         $pagination = new \yii\data\Pagination([
-            'defaultPageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 20),
+            'defaultPageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 10),
             'totalCount' => $query->count(),
         ]);
 
@@ -103,6 +104,7 @@ class WorkorderController extends BaseController
         $handlingCounts = $query->where(['or', ['user_id' => $user_id], ['worker_id' => $user_id]])->andWhere(['state' => WorkOrder::STATE_HANDLING])->count();
         $finishCounts = $query->where(['or', ['user_id' => $user_id], ['worker_id' => $user_id]])->andWhere(['state' => WorkOrder::$STATE_FINISH])->count();
 
+        //var_dump($finishCounts);exit;
         return $this->render('index', [
             'suspendingCounts' => $suspendingCounts,
             'handlingCounts' => $handlingCounts,
