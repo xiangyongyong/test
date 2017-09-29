@@ -48,6 +48,45 @@ class UserGatewayGroup extends \yii\db\ActiveRecord
     }
     
     /**
+     * 获取用户获取所有的网关组id数组
+     * @param $user_id
+     * @return array
+     */
+    public static function getGroupsByUser($user_id)
+    {
+        $data = self::find()->where(['user_id' => $user_id,'type' => 'group'])->asArray()->all();
+        if (!$data) {
+            return [];
+        }
+        return ArrayHelper::getColumn($data, 'target_id');
+    }
+
+    /**
+     * 保存数据
+     * @param $user_id int 用户id
+     * @param $groups array 网关组id数组
+     * @return bool|int
+     */
+    public static function saveData($user_id, $groups)
+    {
+        // 删除所有原来的记录
+        self::deleteAll(['user_id' => $user_id]);
+        if (empty($groups)) {
+            return true;
+        }
+
+        $newGroup = [];
+        foreach ($groups as $group_id) {
+            if (!$group_id) {
+                continue;
+            }
+            $newGroup[] = [$user_id, $group_id,'group'];
+        }
+
+        return Yii::$app->db->createCommand()->batchInsert(self::tableName(), ['user_id', 'target_id','type'], $newGroup)->execute();
+    }
+    
+    /**
      * 根据组id获取所有的用户id数组
      * @param $group_id
      * @return array

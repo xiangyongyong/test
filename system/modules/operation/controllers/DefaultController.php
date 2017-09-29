@@ -16,8 +16,10 @@ class DefaultController extends BaseController
 {
     
     public function actionMap()
-    {        
+    {
         $this->layout = false;
+        $get = \Yii::$app->request->get();        
+        
         $user_id = \yii::$app->user->getIdentity()->user_id;
         $user = User::find();
         $userInfo = User::findOne($user_id);
@@ -25,6 +27,15 @@ class DefaultController extends BaseController
         //根据不同角色查找对应的网关1-管理员 10-高级运维 20-一般运维
         $gatewayQuery = Gateway::find()
                         ->select(['gateway_id', 'state', 'longitude', 'latitude']);
+        if (isset($get['ajax'],$get['keyword']) && $get['ajax'] == 'getAll') {
+            $keyword = $get['keyword']; // 搜索关键字
+            
+            // 搜索关键字
+            if (trim($keyword)) {
+                $gatewayQuery->andWhere(['or', ['like', 'gateway_name', $keyword], ['like', 'address', $keyword], ['=', 'gateway_id', $keyword], ['=', 'pole', $keyword]]);
+            }
+        }        
+        
         if($userInfo->role_id == '1'){
             //管理员查看所有
             $gateway = $gatewayQuery->asArray()->all();
@@ -66,12 +77,12 @@ class DefaultController extends BaseController
                 }
             }
             $groups = explode(',', ltrim($a));            
-            $gatewayQuery->where(['is_group' => 0])->andWhere(['group_id' => $groups]);
+            $gatewayQuery->andWhere(['is_group' => 0])->andWhere(['group_id' => $groups]);
             $gateway = $gatewayQuery->asArray()->all();
             $gatewaygroups = ArrayHelper::index($gateway, 'gateway_id');
             
             $gateways = explode(',', ltrim($b));
-            $gatewayQuery->where(['is_group' => 0])->andWhere(['gateway_id' => $gateways]);                        
+            $gatewayQuery->andWhere(['is_group' => 0])->andWhere(['gateway_id' => $gateways]);                        
             $gateway = $gatewayQuery->asArray()->all();
             $gatewayids = ArrayHelper::index($gateway, 'gateway_id');
 
@@ -120,7 +131,7 @@ class DefaultController extends BaseController
         $state[1] = isset($state[1]) ? $state[1] : 0 ;
         $state[2] = isset($state[2]) ? $state[2] : 0 ;
         $total = count($gatewayList);
-        $get = \Yii::$app->request->get();
+        
         if (isset($get['ajax']) && $get['ajax'] == 'getAll') {
             return $this->ajaxReturn([
                 'code' => 0,
@@ -179,6 +190,7 @@ class DefaultController extends BaseController
                     ->where(['gateway_id' => $gateway_id])
                     ->asArray()->one();            
             $gateway['state'] = $state[$gateway['state']];
+            $gateway['pole'] = isset($gateway['pole']) ? $gateway['pole'] : "--";
             $gateway['add_time'] = date("Y-m-d H:i:s", $gateway['add_time']);
             if(Gateway::getUserByGateway($gateway_id)){
                 $gateway['worker_id'] = Gateway::getUserByGateway($gateway_id);

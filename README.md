@@ -34,6 +34,3 @@
 	修改system\modules\user\models\usergatewaygroup		getGroupsByUser、saveData、getUsersByGroup方法查询条件增加type
 	
 	修改system\modules\gateway\models\gateway			getUserByGateway方法修改查询字段
-
-	ssss
-	woshixiangyong

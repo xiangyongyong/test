@@ -32,6 +32,11 @@
         offset: new AMap.Pixel(0, -30)
     });
     
+    // 一分钟同步一次
+    setInterval(function () {
+        getData();
+    }, 1000*60);
+    
     getData();
     // 获取首页的图表数据
     function getData() {
@@ -73,10 +78,8 @@
             //markers.push(marker);
             marker.setMap(map);
         });
-
         // @TODO 让地图自适应在视觉范围内显示所有的点
         map.setFitView();
-
     }
     
     function showBasic(e) {
@@ -181,11 +184,30 @@
     
     $("#close-port").on('click', function(){
         $("#portBox").css('display','none');
+        $("#gatewayBox ul").find(".port-num").removeClass("port-on");
     })
     
     layui.use(['layer', 'form'], function() {
         var $ = layui.jquery,
-            layer = layui.layer,form = layui.form;                
+            layer = layui.layer,form = layui.form;       
+            
+        // 网关搜索
+        form.on('submit(search)', function(data){
+            //console.log(data);return false;
+            var keyword = data.field.search;
+            $.get(getAllUrl, {ajax: 'getAll', keyword: keyword}, function (res) {
+                //console.log(res);return false;
+                var data = JSON.parse(res);
+                
+                if (data.code == 0) {
+                    var gatewayData = data.data;
+                    //console.log(gatewayData);return false;
+                    // 调用点聚合 网关状态图表 网关组表 工单表
+                    addCluster(gatewayData);
+                }
+            });
+            return false;
+        });
        
         // 扫描状态更改
 //        $("body").delegate('.port_action', 'click', function () {

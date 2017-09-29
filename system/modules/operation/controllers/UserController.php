@@ -1,42 +1,25 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ligang
- * Date: 2017/3/16
- * Time: 上午11:11
- */
 
-namespace system\modules\user\controllers;
+namespace system\modules\operation\controllers;
 
 use yii;
 use system\modules\user\models\User;
 use system\modules\operation\models\UserGatewayGroup;
 
-class ManageController extends BaseController
+/**
+ * Description of UserController
+ *
+ * @author Administrator
+ */
+class UserController extends BaseController
 {
-
     /**
      * 用户列表
      * @return string
      */
     public function actionIndex()
     {
-        $keyword = \Yii::$app->request->get('keyword'); // 搜索关键字
-        $status = \Yii::$app->request->get('status'); // 状态，默认只显示status=0的数据
-
         $query = User::find();
-
-        // 状态
-        if ($status != '') {
-            $query->andWhere(['status' => $status]);
-        } else {
-            $query->andWhere(['!=', 'status', User::STATUS_DELETE]);
-        }
-
-        // 搜索关键字
-        if (trim($keyword)) {
-            $query->andWhere(['or', ['like', 'username', $keyword], ['like', 'realname', $keyword], ['like', 'phone', $keyword], ['like', 'email', $keyword]]);
-        }
 
         //分页
         $pagination = new \yii\data\Pagination([
@@ -59,7 +42,7 @@ class ManageController extends BaseController
             'pagination' => $pagination,
         ]);
     }
-
+    
     /**
      * 增加用户
      * @return string|\yii\web\Response
@@ -170,39 +153,7 @@ class ManageController extends BaseController
             ]);
         }
     }
-
-    /**
-     * 绑定网关组
-     * @param $id
-     * @return string|yii\web\Response
-     */
-    public function actionBindgroup($id)
-    {
-        $model = User::findOne(['status' => User::STATUS_ACTIVE, 'user_id' => $id]);
-        if (!$model) {
-            $this->flashMsg('error', '数据不存在');
-            return $this->redirect('index');
-        }
-
-        // 提交数据
-        if (\Yii::$app->request->isPost) {
-            $group_id = \Yii::$app->request->post('group_id');
-            $groups = $group_id ? explode(',', $group_id) : [];
-            $res = UserGatewayGroup::saveData($id, $groups);
-            if ($res) {
-                $this->flashMsg('ok', '操作成功');
-            } else {
-                $this->flashMsg('error', '操作失败，请重试!');
-            }
-        }
-
-        // 查找用户已经绑定的组id
-        $groups = UserGatewayGroup::getGroupsByUser($id);
-
-        return $this->render('bindgroup', [
-            'model' => $model,
-            'groups' => $groups,
-        ]);
-    }
-
+    
+    
+    
 }

@@ -24,7 +24,7 @@ use yii\helpers\Html;
     .title-color{ color: #EEEEEE; font-size: 36px; font-weight: 500; font-family: "微软雅黑"; letter-spacing:4px; line-height: 90px;}
     .search{ position: relative; line-height: 90px; }
     .search-input{ width: 250px; height: 34px; background: rgba(0,0,0,0); border-radius: 50px; border: #515356 1px solid; color: #818183; padding-left: 20px; }
-    .icon-sousuo{ text-decoration: none; color: #FFFFFF; font-weight: 500; font-size: 20px; position: absolute; top: 0px; right: 17px; }
+    .icon-sousuo{ text-decoration: none; color: #FFFFFF; font-weight: 500; font-size: 20px; position: absolute; top: 31px; right: 17px; border: none; background-color: unset; }
     .icon-sousuo:hover{ color: #FFFFFF; }
     .search-right{ right: 415px; }
   .layui-layout-admin .layui-footer{ left: 0; right: auto; width: 100%; }
@@ -291,9 +291,9 @@ use yii\helpers\Html;
     <!--搜索start-->
     <div class="layui-nav layui-layout-right search-right">
       <div class="search">
-      	<form action="">
-      		<input type="text" name="search" class="search-input" placeholder="搜索">
-      		<a class="iconfont icon-sousuo" href="javascript:;"></a>
+      	<form class="layui-form" action="">
+            <input type="text" name="search" class="search-input" placeholder="搜索">
+            <button lay-submit lay-filter="search" class="iconfont icon-sousuo"></button>
       	</form>
       </div>
     </div>
@@ -322,10 +322,9 @@ use yii\helpers\Html;
           	<span class="nav-ico-text">admin</span>
           </a>
           <dl class="layui-nav-child">
-            <dd><a href="javascript:;">列表一</a></dd>
-            <dd><a href="javascript:;">列表二</a></dd>
-            <dd><a href="javascript:;">列表三</a></dd>
-            <dd><a href="">超链接</a></dd>
+            <dd><a href="<?= \yii\helpers\Url::toRoute(['/user/info/update'])?>"><i class="fa fa-fw fa-user-o" aria-hidden="true"></i> 个人信息</a></dd>
+            <dd><a href="<?= \yii\helpers\Url::toRoute(['/user/info/password'])?>"><i class="fa fa-fw fa-lock" aria-hidden="true"></i> 修改密码</a></dd>
+            <dd><a href="<?= \yii\helpers\Url::toRoute(['/user/default/logout'])?>"><i class="fa fa-fw fa-sign-out" aria-hidden="true"></i> 登出</a></dd>
           </dl>
         </li>
         <li class="layui-nav-item">
@@ -334,15 +333,14 @@ use yii\helpers\Html;
           	<span class="nav-ico-text">运维菜单</span>
           </a>
           <dl class="layui-nav-child">
-            <dd><a href="javascript:;">列表一</a></dd>
-            <dd><a href="javascript:;">列表二</a></dd>
-            <dd><a href="">超链接</a></dd>
+            <dd><a href="javascript:;">全部工单</a></dd>
+            <dd><a href="javascript:;">我的工单</a></dd>
           </dl>
         </li>
         <li class="layui-nav-item">
           <a href="">
-      			<img class="nav-ico-samll" src="<?= WEB?>/theme/default/images/security.png" alt="">
-      			<span class="nav-ico-text">安全管理</span>
+                <img class="nav-ico-samll" src="<?= WEB?>/theme/default/images/security.png" alt="">
+                <span class="nav-ico-text">安全管理</span>
           </a>
         </li>
         <li class="layui-nav-item">
@@ -358,10 +356,14 @@ use yii\helpers\Html;
           </a>
          </li>
          <li class="layui-nav-item">
-          <a href="">
+          <a href="javascript:;">
           	<img class="nav-ico-samll" src="<?= WEB?>/theme/default/images/personnel.png" alt="">
           	<span class="nav-ico-text">人员管理</span>
           </a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">用户列表</a></dd>
+            <dd><a href="javascript:;">人员分配</a></dd>
+          </dl>
          </li>
       </ul>
     </div>
