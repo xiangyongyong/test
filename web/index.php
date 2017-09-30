@@ -18,7 +18,7 @@ $app = (new yii\web\Application($config));
 
 // 定义web根目录的url
 define('WEB', ($web = dirname(Yii::$app->request->getScriptUrl())) != '/' ? '' : '');
-                                                                    //三目结果若为$web则可用路径进行访问
+                                                                    //三目结果若为$web则可用路径进行访问sss。
 define('VERSION', '1.0.0');
 //echo Yii::$app->request->getScriptUrl();
 $app->run();

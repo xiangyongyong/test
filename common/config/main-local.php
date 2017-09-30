@@ -4,6 +4,7 @@ return [
         'db' => [
             'class' => 'yii\db\Connection',
             'dsn' => 'mysql:host=localhost;dbname=defender',
+            //
             'username' => 'root',
             'password' => 'root',
             'charset' => 'utf8',
