@@ -13,7 +13,6 @@ class LogController extends BaseController
 {
     public function actionIndex()
     {
-        $keyword = \Yii::$app->request->get('keyword'); // 搜索关键字
         $type = \Yii::$app->request->get('type'); // 分组
 
         $query = Log::find();
@@ -23,14 +22,9 @@ class LogController extends BaseController
             $query->andWhere(['type' => $type]);
         }
 
-        // 搜索关键字
-        if (trim($keyword)) {
-            $query->andWhere(['or', ['like', 'content', $keyword], ['like', 'ip', $keyword], ['like', 'user_id', $keyword]]);
-        }
-
         //分页
         $pagination = new \yii\data\Pagination([
-            'defaultPageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 20),
+            'pageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 20),
             'totalCount' => $query->count(),
         ]);
 

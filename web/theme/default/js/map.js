@@ -276,28 +276,5 @@
             });
         });
 
-        //工单弹窗
-        layui.use('layer',function() {
-            var layer = layui.layer;
-
-            $('.openLayer').click(function () {
-                layer.open({
-                    type: 2,
-                    title:false,
-                    closeBtn:0,
-                    area: ['1080px', '750px'],
-                    offset:['90px','90px'],
-                    fixed: false, //不固定
-                    maxmin: false,
-                    shadeClose:true,
-                    content: $(this).attr('data-action'),
-                    success:function(layero,index) {
-                        console.log(layero,index);
-                    }
-                });
-            });
-
-        })
-
     });
 

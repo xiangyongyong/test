@@ -6,7 +6,6 @@ use system\modules\workorder\models\WorkOrder;
 use system\modules\main\models\Comment;
 use system\modules\main\models\Log;
 use system\modules\user\models\User;
-use yii\data\Pagination;
 
 /**
  * Default controller for the `operation` module
@@ -19,9 +18,9 @@ class WorkorderController extends BaseController
      */
     public function actionIndex()
     {
-        $stategroup = \Yii::$app->request->get('stategroup', 0); // 状态，默认显示
-
-        $query = WorkOrder::find();       
+        $stategroup = \Yii::$app->request->get('stategroup', 0); // 状态，默认显示               
+        
+        $query = WorkOrder::find();           
         
         if ($stategroup == 0) {
             $query->andWhere(['state' => WorkOrder::STATE_SUSPENDING]);
@@ -35,9 +34,30 @@ class WorkorderController extends BaseController
 
         //分页
         $pagination = new \yii\data\Pagination([
-            'defaultPageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 20),
+            'pageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 20),
             'totalCount' => $query->count(),
         ]);
+        
+        //根据不同角色查找对应的工单1-管理员 10-高级运维 20-一般运维
+        $user_id = \yii::$app->user->getIdentity()->user_id;
+        $user = User::find();
+        $userInfo = User::findOne($user_id);
+        if($userInfo->role_id == '1'){
+            //管理员查看所有
+                 
+        }else if($userInfo->role_id == '10'){   
+            //高级运维查看本公司员工负责的所有工单
+            $company_id = $userInfo->company_id;
+            $users = $user
+                    ->select('user_id')
+                    ->where(['company_id' => $company_id])
+                    ->column();
+                    //->asArray()->all();
+            $query->andWhere(['or', ['user_id' => $users], ['worker_id' => $users]]);
+        }else{         
+            //一般运维查看自己负责的工单
+            $query->andWhere(['or', ['user_id' => $user_id], ['worker_id' => $user_id]]);
+        }
 
         $data = $query
             ->with('worker')
@@ -46,12 +66,12 @@ class WorkorderController extends BaseController
             ->offset($pagination->offset)
             ->limit($pagination->limit)
             ->orderBy(['order_id' => SORT_DESC, 'state' => SORT_ASC])
-            ->all();
+            ->all();  
         
         $suspendingCounts = $query->where(['state' => WorkOrder::STATE_SUSPENDING])->count();
         $handlingCounts = $query->where(['state' => WorkOrder::STATE_HANDLING])->count();
         $finishCounts = $query->where(['state' => WorkOrder::$STATE_FINISH])->count();
-        //print_r($data);print_r($suspendingCounts." ");print_r($handlingCounts." ");print_r($finishCounts." ");exit;
+        
         return $this->render('index', [
             'suspendingCounts' => $suspendingCounts,
             'handlingCounts' => $handlingCounts,
@@ -87,7 +107,7 @@ class WorkorderController extends BaseController
 
         //分页
         $pagination = new \yii\data\Pagination([
-            'defaultPageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 10),
+            'pageSize' => \Yii::$app->systemConfig->getValue('LIST_ROWS', 20),
             'totalCount' => $query->count(),
         ]);
 
@@ -104,7 +124,6 @@ class WorkorderController extends BaseController
         $handlingCounts = $query->where(['or', ['user_id' => $user_id], ['worker_id' => $user_id]])->andWhere(['state' => WorkOrder::STATE_HANDLING])->count();
         $finishCounts = $query->where(['or', ['user_id' => $user_id], ['worker_id' => $user_id]])->andWhere(['state' => WorkOrder::$STATE_FINISH])->count();
 
-        //var_dump($finishCounts);exit;
         return $this->render('index', [
             'suspendingCounts' => $suspendingCounts,
             'handlingCounts' => $handlingCounts,

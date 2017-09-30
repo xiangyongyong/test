@@ -333,8 +333,8 @@ use yii\helpers\Html;
           	<span class="nav-ico-text">运维菜单</span>
           </a>
           <dl class="layui-nav-child">
-            <dd><a class="openLayer" data-action="<?= \yii\helpers\Url::toRoute('/operation/workorder/index')?>" href="javascript:;">全部工单</a></dd>
-            <dd><a class="openLayer" data-action="<?= \yii\helpers\Url::toRoute('/operation/workorder/my')?>" href="javascript:;">我的工单</a></dd>
+            <dd><a href="javascript:;">全部工单</a></dd>
+            <dd><a href="javascript:;">我的工单</a></dd>
           </dl>
         </li>
         <li class="layui-nav-item">
@@ -632,6 +632,7 @@ use yii\helpers\Html;
 //JavaScript代码区域
 layui.use('element', function(){
    var element = layui.element;
+  
 });
 var staticBasePath = '<?= WEB."/theme/default";?>'; // 静态资源路径
 var getAllUrl = '<?= \yii\helpers\Url::toRoute(['map'])?>';
